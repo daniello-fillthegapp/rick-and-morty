@@ -1,4 +1,4 @@
-package com.fillthegapp.rickandmorty
+package com.fillthegapp.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,7 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.fillthegapp.rickandmorty.ui.theme.RickAndMortyTheme
+import com.fillthegapp.presentation.ui.theme.RickAndMortyTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

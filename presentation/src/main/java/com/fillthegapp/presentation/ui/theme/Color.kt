@@ -1,4 +1,4 @@
-package com.fillthegapp.rickandmorty.ui.theme
+package com.fillthegapp.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
