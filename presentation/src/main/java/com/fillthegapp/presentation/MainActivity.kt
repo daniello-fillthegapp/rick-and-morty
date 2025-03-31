@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
             RickAndMortyTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
-                        name = "Android",
+                        name = "World",
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
