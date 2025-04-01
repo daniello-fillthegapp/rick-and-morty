@@ -12,5 +12,5 @@ data class CharacterModel(
     val creationDate: String,
     val origin: LocationModel,
     val location: LocationModel,
-    val episodeList: List<String>
+    val episodeList: List<String>,
 )
