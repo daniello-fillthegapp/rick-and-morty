@@ -1,5 +1,6 @@
 package com.fillthegapp.data.di
 
+import com.fillthegapp.data.datasource.LocalDataSource
 import com.fillthegapp.data.datasource.RemoteDataSource
 import com.fillthegapp.data.repository.CharacterRepositoryImpl
 import com.fillthegapp.domain.repository.CharacterRepository
@@ -16,10 +17,12 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun provideCharacterRepository(
-        remoteDataSource: RemoteDataSource
+        remoteDataSource: RemoteDataSource,
+        localDataSource: LocalDataSource
     ): CharacterRepository {
         return CharacterRepositoryImpl(
-            remoteDataSource = remoteDataSource
+            remoteDataSource = remoteDataSource,
+            localDataSource = localDataSource
         )
     }
 }

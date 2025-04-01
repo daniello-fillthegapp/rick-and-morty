@@ -22,7 +22,7 @@ class CharactersViewModel @Inject constructor(
 ) : ViewModel() {
 
     companion object {
-        private const val FIRST_PAGE_INDEX = 1
+        private const val FIRST_PAGE_INDEX = 0
     }
 
     private val _screenState =
@@ -76,20 +76,27 @@ class CharactersViewModel @Inject constructor(
                             oldItems = current.data.items,
                             newItems = newData.items.map { CharacterViewData.from(it) }
                         )
-                    )
+                    ),
+                    isErrorLoadingMore = false
                 )
             } else {
                 CharactersScreenState.Loaded(
-                    data = PaginatedCharacterListViewData.from(newData)
+                    data = PaginatedCharacterListViewData.from(newData),
+                    isErrorLoadingMore = false
                 )
             }
         }
     }
 
     private fun onPageLoadFailure(error: Throwable) {
-        _screenState.update {
-            Log.e(this.javaClass.name, error.message, error)
-            CharactersScreenState.Error
+        Log.e(this.javaClass.name, error.message, error)
+        val currentState = _screenState.value
+        if (currentState is CharactersScreenState.Loading) {
+            _screenState.update { CharactersScreenState.Error }
+        } else if (currentState is CharactersScreenState.Loaded) {
+            _screenState.update { currentState.copy(
+                isErrorLoadingMore = true
+            ) }
         }
     }
 
@@ -120,7 +127,9 @@ open class CharactersScreenState(
 ) {
     object Loading : CharactersScreenState(false)
     object Error : CharactersScreenState(true)
+    object ErrorLoaded : CharactersScreenState(true)
     data class Loaded(
+        val isErrorLoadingMore: Boolean,
         val data: PaginatedCharacterListViewData,
     ) : CharactersScreenState(data.hasMoreItems)
 }

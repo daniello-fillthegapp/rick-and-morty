@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -86,6 +87,7 @@ private fun CharactersScreenContent(
             is CharactersScreenState.Loaded -> {
                 CharacterListView(
                     data = currentState.data,
+                    isErrorLoadingMore = currentState.isErrorLoadingMore,
                     onMoreItemsRequested = onMoreItemsRequested,
                     onCharacterClicked = onCharacterClicked
                 )
@@ -99,37 +101,40 @@ private fun CharacterListView(
     onMoreItemsRequested: () -> Unit,
     onCharacterClicked: (Int) -> Unit,
     modifier: Modifier = Modifier,
+    isErrorLoadingMore: Boolean,
     data: PaginatedCharacterListViewData,
 ) {
     LazyColumn(
         modifier = modifier.fillMaxSize()
     ) {
-        data.items.forEachIndexed { index, item ->
-            if (index == 0) {
-                item { Spacer(modifier = Modifier.height(Spacing.large)) }
-            }
+        itemsIndexed(data.items) { index, item ->
+            // You can add padding or spacing between items here
+            Spacer(modifier = Modifier.height(Spacing.large))
 
-            if (index > 0) {
-                item { Spacer(modifier = Modifier.height(Spacing.large)) }
-            }
-
-            item {
-                CharacterItemView(
-                    modifier = Modifier.padding(
-                        horizontal = Spacing.medium,
-                        vertical = Spacing.small
-                    ),
-                    data = item,
-                    onClick = onCharacterClicked
-                )
-            }
+            CharacterItemView(
+                modifier = Modifier.padding(
+                    horizontal = Spacing.medium,
+                    vertical = Spacing.small
+                ),
+                data = item,
+                onClick = onCharacterClicked
+            )
 
             // To do the infinity scroll effect, just 2 items before the end start loading the next page
-            if (data.hasMoreItems && index < data.items.size - 2) {
-                item {
-                    LaunchedEffect(Unit) {
-                        onMoreItemsRequested()
-                    }
+            if (index >= data.items.size - 2) {
+                LaunchedEffect(Unit) {
+                    onMoreItemsRequested()
+                }
+            }
+        }
+        if (isErrorLoadingMore) {
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    CircularProgressIndicator(modifier = Modifier.size(Spacing.extraLarge))
                 }
             }
         }
