@@ -8,7 +8,9 @@ import com.fillthegapp.domain.usecase.GetCharactersPageUseCase
 import com.fillthegapp.presentation.model.CharacterViewData
 import com.fillthegapp.presentation.model.PaginatedCharacterListViewData
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -27,6 +29,9 @@ class CharactersViewModel @Inject constructor(
         MutableStateFlow<CharactersScreenState>(CharactersScreenState.Loading)
     val screenState = _screenState.asStateFlow()
 
+    private val _screenAction = MutableSharedFlow<CharacterListScreenAction>()
+    val screenAction = _screenAction.asSharedFlow()
+
     private var nextPageIndex: Int = FIRST_PAGE_INDEX
 
     init {
@@ -39,6 +44,12 @@ class CharactersViewModel @Inject constructor(
 
     fun onRetryClicked() {
         loadNextPage()
+    }
+
+    fun onCharacterClicked(characterId: Int) {
+        viewModelScope.launch {
+            _screenAction.emit(CharacterListScreenAction.NavigateToCharacterDetailAction(characterId))
+        }
     }
 
     private fun loadNextPage() {
@@ -112,4 +123,8 @@ open class CharactersScreenState(
     data class Loaded(
         val data: PaginatedCharacterListViewData,
     ) : CharactersScreenState(data.hasMoreItems)
+}
+
+sealed class CharacterListScreenAction {
+    data class NavigateToCharacterDetailAction(val characterId: Int) : CharacterListScreenAction()
 }

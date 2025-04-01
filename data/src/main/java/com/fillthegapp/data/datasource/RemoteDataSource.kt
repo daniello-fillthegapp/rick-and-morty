@@ -16,6 +16,6 @@ interface RemoteDataSource {
 
     @GET("character/{character_id}")
     suspend fun getCharacterDetails(
-        @Path("character_id") characterId: String,
+        @Path("character_id") characterId: Int,
     ): CharacterResponse
 }

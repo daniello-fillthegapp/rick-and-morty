@@ -7,7 +7,7 @@ import javax.inject.Inject
 class GetCharacterDetailsUseCase @Inject constructor(
     private val characterRepository: CharacterRepository
 ) {
-    suspend fun execute(id: String): Result<CharacterModel> {
+    suspend fun execute(id: Int): Result<CharacterModel> {
         return characterRepository.getCharacterDetails(id)
     }
 }

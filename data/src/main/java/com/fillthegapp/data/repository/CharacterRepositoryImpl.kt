@@ -17,14 +17,15 @@ class CharacterRepositoryImpl(
 
                 PaginatedCharacterListModel(
                     items = charactersPageResponse.characterResponseList.map { it.toDomain() },
-                    hasMoreItems = charactersPageResponse.pageInfoResponse.nextPageUrl.orEmpty().isNotEmpty(),
+                    hasMoreItems = charactersPageResponse.pageInfoResponse.nextPageUrl.orEmpty()
+                        .isNotEmpty(),
                     nextPageIndex = index.inc()
                 )
             }
         }
     }
 
-    override suspend fun getCharacterDetails(id: String): Result<CharacterModel> {
+    override suspend fun getCharacterDetails(id: Int): Result<CharacterModel> {
         return withContext(Dispatchers.IO) {
             runCatching {
                 remoteDataSource.getCharacterDetails(id).toDomain()

@@ -34,6 +34,7 @@ import com.fillthegapp.presentation.model.PaginatedCharacterListViewData
 import com.fillthegapp.presentation.ui.component.ErrorView
 import com.fillthegapp.presentation.ui.component.LoaderView
 import com.fillthegapp.presentation.ui.theme.Spacing
+import com.fillthegapp.presentation.viewmodel.CharacterListScreenAction
 import com.fillthegapp.presentation.viewmodel.CharactersScreenState
 import com.fillthegapp.presentation.viewmodel.CharactersViewModel
 
@@ -45,12 +46,22 @@ fun CharactersScreen(
 ) {
     val screenState by viewModel.screenState.collectAsState()
 
+    LaunchedEffect(true) {
+        viewModel.screenAction.collect { action ->
+            when (action) {
+                is CharacterListScreenAction.NavigateToCharacterDetailAction -> {
+                    onNavigateToDetails(action.characterId)
+                }
+            }
+        }
+    }
+
     CharactersScreenContent(
         modifier = modifier,
         state = screenState,
         onRetryClicked = viewModel::onRetryClicked,
         onMoreItemsRequested = viewModel::onMoreItemsRequested,
-        onCharacterClicked = onNavigateToDetails
+        onCharacterClicked = viewModel::onCharacterClicked
     )
 }
 
@@ -94,6 +105,10 @@ private fun CharacterListView(
         modifier = modifier.fillMaxSize()
     ) {
         data.items.forEachIndexed { index, item ->
+            if (index == 0) {
+                item { Spacer(modifier = Modifier.height(Spacing.large)) }
+            }
+
             if (index > 0) {
                 item { Spacer(modifier = Modifier.height(Spacing.large)) }
             }
@@ -149,7 +164,7 @@ fun CharacterItemView(
             )
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = data.species,
+                text = data.locationName,
                 style = MaterialTheme.typography.bodySmall,
             )
         }
