@@ -8,15 +8,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.fillthegapp.presentation.screen.CharacterDetailsScreen
 
-fun NavController.navigateToDetails(id: String, options: NavOptions? = null) {
-    navigate(route = AppRoute.CharacterDetail.route.replace("{id}", id), options)
+fun NavController.navigateToDetails(id: Int, options: NavOptions? = null) {
+    navigate(route = AppRoute.CharacterDetail.route.replace("{id}", id.toString()), options)
 }
 
 fun NavGraphBuilder.addCharacterDetailsRoute(
     onNavigateBack: () -> Unit
 ) {
     composable(route = AppRoute.CharacterDetail.route, arguments = listOf(navArgument("id") {
-        type = NavType.StringType
+        type = NavType.IntType
     })) {
         CharacterDetailsScreen(
             onNavigateBack = onNavigateBack

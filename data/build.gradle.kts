@@ -50,6 +50,7 @@ dependencies {
     implementation(libs.retrofit.kotlinx.serialization.converter)
     implementation(libs.kotlin.serialization.json)
     implementation(libs.androidx.core.ktx)
+    implementation(libs.logging.interceptor)
     implementation(libs.androidx.appcompat)
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)

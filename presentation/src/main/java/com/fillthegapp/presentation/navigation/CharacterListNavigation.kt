@@ -5,7 +5,7 @@ import androidx.navigation.compose.composable
 import com.fillthegapp.presentation.screen.CharactersScreen
 
 fun NavGraphBuilder.addCharacterListRoute(
-    onNavigateToDetails: (String) -> Unit,
+    onNavigateToDetails: (Int) -> Unit,
 ) {
     composable(route = AppRoute.Characters.route) {
         CharactersScreen(

@@ -2,7 +2,7 @@ package com.fillthegapp.presentation.model
 
 import com.fillthegapp.domain.model.PaginatedCharacterListModel
 
-class PaginatedCharacterListViewData(
+data class PaginatedCharacterListViewData(
     val hasMoreItems: Boolean,
     val nextPageIndex: Int,
     val items: List<CharacterViewData>,

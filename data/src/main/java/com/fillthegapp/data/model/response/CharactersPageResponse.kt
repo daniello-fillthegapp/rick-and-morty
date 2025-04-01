@@ -13,6 +13,6 @@ data class CharactersPageResponse(
 data class CharacterPageInfoResponse(
     @SerialName("count") val count: Int,
     @SerialName("pages") val pagesAmount: Int,
-    @SerialName("next") val nextPageUrl: String,
-    @SerialName("prev") val previousPageUrl: String,
+    @SerialName("next") val nextPageUrl: String?,
+    @SerialName("prev") val previousPageUrl: String?,
 )
