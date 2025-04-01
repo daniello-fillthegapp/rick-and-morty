@@ -4,13 +4,13 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data class CharactersPageResponse(
+data class CharactersPageResponse(
     @SerialName("info") val pageInfoResponse: CharacterPageInfoResponse,
     @SerialName("results") val characterResponseList: List<CharacterResponse>,
 )
 
 @Serializable
-internal data class CharacterPageInfoResponse(
+data class CharacterPageInfoResponse(
     @SerialName("count") val count: Int,
     @SerialName("pages") val pagesAmount: Int,
     @SerialName("next") val nextPageUrl: String,

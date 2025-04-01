@@ -7,15 +7,15 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-internal interface RemoteDataSource {
+interface RemoteDataSource {
 
     @GET("character")
-    suspend fun getCharacters(
+    suspend fun getCharactersPage(
         @Query("page") @IntRange(from = 1) page: Int
     ): CharactersPageResponse
 
     @GET("character/{character_id}")
-    suspend fun getCharacter(
-        @Path("character_id") id: String,
+    suspend fun getCharacterDetails(
+        @Path("character_id") characterId: String,
     ): CharacterResponse
 }

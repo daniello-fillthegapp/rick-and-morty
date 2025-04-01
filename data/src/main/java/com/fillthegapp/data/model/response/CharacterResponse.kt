@@ -1,10 +1,11 @@
 package com.fillthegapp.data.model.response
 
+import com.fillthegapp.domain.model.CharacterModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data class CharacterResponse(
+data class CharacterResponse(
     @SerialName("id") val id: Int,
     @SerialName("name") val name: String,
     @SerialName("status") val status: String,
@@ -17,10 +18,21 @@ internal data class CharacterResponse(
     @SerialName("origin") val origin: LocationResponse,
     @SerialName("location") val location: LocationResponse,
     @SerialName("episode") val episodeList: List<String>,
-)
-
-@Serializable
-internal data class LocationResponse(
-    @SerialName("name") val name: String,
-    @SerialName("url") val url: String,
-)
+) {
+    fun toDomain(): CharacterModel {
+        return CharacterModel(
+            id = this.id,
+            name = this.name,
+            status = this.status,
+            species = this.species,
+            type = this.type,
+            gender = this.gender,
+            image = this.image,
+            url = this.url,
+            creationDate = this.creationDate,
+            origin = this.origin.toDomain(),
+            location = this.location.toDomain(),
+            episodeList = this.episodeList
+        )
+    }
+}
