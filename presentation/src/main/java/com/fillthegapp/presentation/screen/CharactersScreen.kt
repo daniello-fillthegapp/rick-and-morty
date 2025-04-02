@@ -13,15 +13,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -67,7 +65,7 @@ fun CharactersScreen(
         isNetworkAvailable = networkState,
         onRetryClicked = viewModel::onRetryClicked,
         onMoreItemsRequested = viewModel::onMoreItemsRequested,
-        onCharacterClicked = viewModel::onCharacterClicked
+        onCharacterClicked = viewModel::onCharacterClicked,
     )
 }
 
@@ -92,10 +90,11 @@ private fun CharactersScreenContent(
 
             is CharactersScreenState.Loaded -> {
                 CharacterListView(
-                    data = currentState.data,
-                    isErrorLoadingMore = currentState.isErrorLoadingMore,
                     onMoreItemsRequested = onMoreItemsRequested,
-                    onCharacterClicked = onCharacterClicked
+                    onCharacterClicked = onCharacterClicked,
+                    isErrorLoadingMore = currentState.isErrorLoadingMore && !isNetworkAvailable,
+                    data = currentState.data,
+                    isLoadingMoreData = currentState.isLoadingMoreData
                 )
             }
         }
@@ -118,17 +117,17 @@ private fun CharactersScreenContent(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CharacterListView(
     onMoreItemsRequested: () -> Unit,
     onCharacterClicked: (Int) -> Unit,
     modifier: Modifier = Modifier,
     isErrorLoadingMore: Boolean,
+    isLoadingMoreData: Boolean,
     data: PaginatedCharacterListViewData,
 ) {
-    LazyColumn(
-        modifier = modifier.fillMaxSize()
-    ) {
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
         itemsIndexed(data.items) { index, item ->
             Spacer(modifier = Modifier.height(Spacing.large))
 
@@ -141,9 +140,22 @@ private fun CharacterListView(
                 onClick = onCharacterClicked
             )
 
-            if (index >= data.items.size - 2) {
+            if (index >= data.items.size - 4) {
                 LaunchedEffect(Unit) {
                     onMoreItemsRequested()
+                }
+            }
+        }
+
+        if (isLoadingMoreData && !isErrorLoadingMore) {
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(vertical = Spacing.medium),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    CircularProgressIndicator(modifier = Modifier.size(Spacing.extraLarge))
                 }
             }
         }
@@ -151,7 +163,9 @@ private fun CharacterListView(
         if (isErrorLoadingMore) {
             item {
                 Text(
-                    modifier = Modifier.fillMaxWidth().padding(vertical = Spacing.large),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = Spacing.large),
                     text = stringResource(R.string.offline_subtitle),
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center

@@ -60,12 +60,25 @@ class CharactersViewModel @Inject constructor(
 
     private fun getConnectivity() {
         viewModelScope.launch {
-            getNetworkAvailabilityUseCase.execute().collect(_networkState)
+            getNetworkAvailabilityUseCase.execute().collect {
+                if (!_networkState.value && it && _screenState.value.canLoad) {
+                    loadNextPage()
+                }
+                _networkState.emit(it)
+            }
         }
     }
 
     private fun loadNextPage() {
         if (!_screenState.value.canLoad && nextPageIndex != FIRST_PAGE_INDEX) return
+
+        _screenState.update { current ->
+            if (current is CharactersScreenState.Loaded) {
+                current.copy(isLoadingMoreData = true)
+            } else {
+                CharactersScreenState.Loading
+            }
+        }
 
         viewModelScope.launch {
             getCharactersPageUseCase.execute(index = nextPageIndex)
@@ -89,12 +102,14 @@ class CharactersViewModel @Inject constructor(
                             newItems = newData.items.map { CharacterViewData.from(it) }
                         )
                     ),
-                    isErrorLoadingMore = false
+                    isErrorLoadingMore = false,
+                    isLoadingMoreData = false,
                 )
             } else {
                 CharactersScreenState.Loaded(
                     data = PaginatedCharacterListViewData.from(newData),
-                    isErrorLoadingMore = false
+                    isErrorLoadingMore = false,
+                    isLoadingMoreData = false,
                 )
             }
         }
@@ -106,9 +121,11 @@ class CharactersViewModel @Inject constructor(
         if (currentState is CharactersScreenState.Loading) {
             _screenState.update { CharactersScreenState.Error }
         } else if (currentState is CharactersScreenState.Loaded) {
-            _screenState.update { currentState.copy(
-                isErrorLoadingMore = true
-            ) }
+            _screenState.update {
+                currentState.copy(
+                    isErrorLoadingMore = true
+                )
+            }
         }
     }
 
@@ -139,9 +156,9 @@ open class CharactersScreenState(
 ) {
     object Loading : CharactersScreenState(false)
     object Error : CharactersScreenState(true)
-    object ErrorLoaded : CharactersScreenState(true)
     data class Loaded(
         val isErrorLoadingMore: Boolean,
+        val isLoadingMoreData: Boolean,
         val data: PaginatedCharacterListViewData,
     ) : CharactersScreenState(data.hasMoreItems)
 }
