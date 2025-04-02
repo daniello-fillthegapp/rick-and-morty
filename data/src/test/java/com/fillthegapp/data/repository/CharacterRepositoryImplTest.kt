@@ -89,7 +89,7 @@ class CharacterRepositoryImplTest {
         // When: Calling getCharactersPage
         val result = repository.getCharactersPage(index)
 
-        // Then: Should return local data mapped to domain
+        // Then: Should return local data mapped to domain and data is correctly mapped
         assertTrue(result.isSuccess)
         assertEquals(1, result.getOrThrow().items.size)
         assertEquals(result, Result.success(expectedModel))
@@ -172,7 +172,7 @@ class CharacterRepositoryImplTest {
         // When: Calling getCharactersPage
         val result = repository.getCharactersPage(index)
 
-        // Then: Data should be fetched from remote and stored locally
+        // Then: Data should be fetched from remote, stored locally and data is correctly mapped
         assertTrue(result.isSuccess)
         assertEquals(result, Result.success(expectedModel))
         assertEquals(1, result.getOrThrow().items.size)
@@ -226,7 +226,7 @@ class CharacterRepositoryImplTest {
         // When: Calling getCharacterDetails
         val result = repository.getCharacterDetails(id)
 
-        // Then: Should return local data mapped to domain
+        // Then: Should return local data mapped to domain and data is correctly mapped
         assertTrue(result.isSuccess)
         assertEquals(result, Result.success(expectedModel))
         assertEquals(characterEntity.toDomain(), result.getOrThrow())
@@ -287,7 +287,7 @@ class CharacterRepositoryImplTest {
         // When: Calling getCharacterDetails
         val result = repository.getCharacterDetails(id)
 
-        // Then: Should fetch from remote
+        // Then: Should fetch from remote and data is correctly mapped
         assertTrue(result.isSuccess)
         assertEquals(result, Result.success(expectedModel))
         assertEquals(remoteCharacter.toDomain(), result.getOrThrow())
@@ -320,7 +320,7 @@ class CharacterRepositoryImplTest {
         // And: Remote throws an error
         whenever(remoteDataSource.getCharactersPage(index)).thenThrow(RuntimeException("Network error"))
 
-        // When: Calling getCharacterDetails
+        // When: Calling getCharactersPage
         val result = repository.getCharactersPage(index)
 
         // Then: Should return failure
