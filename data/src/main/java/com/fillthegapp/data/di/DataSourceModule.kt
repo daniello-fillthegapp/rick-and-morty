@@ -2,6 +2,7 @@ package com.fillthegapp.data.di
 
 import android.content.Context
 import androidx.room.Room
+import com.fillthegapp.data.datasource.NetworkDataSource
 import com.fillthegapp.data.datasource.RemoteDataSource
 import com.fillthegapp.data.persistance.CharacterDao
 import com.fillthegapp.data.persistance.CharacterDatabase
@@ -40,5 +41,11 @@ object DataSourceModule {
         retrofit: Retrofit
     ): RemoteDataSource {
         return retrofit.create(RemoteDataSource::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideNetworkDataSource(@ApplicationContext context: Context): NetworkDataSource {
+        return NetworkDataSource(context)
     }
 }

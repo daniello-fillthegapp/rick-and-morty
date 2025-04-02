@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fillthegapp.domain.model.PaginatedCharacterListModel
 import com.fillthegapp.domain.usecase.GetCharactersPageUseCase
+import com.fillthegapp.domain.usecase.GetNetworkAvailabilityUseCase
 import com.fillthegapp.presentation.model.CharacterViewData
 import com.fillthegapp.presentation.model.PaginatedCharacterListViewData
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,12 +19,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CharactersViewModel @Inject constructor(
-    private val getCharactersPageUseCase: GetCharactersPageUseCase
+    private val getCharactersPageUseCase: GetCharactersPageUseCase,
+    private val getNetworkAvailabilityUseCase: GetNetworkAvailabilityUseCase
 ) : ViewModel() {
 
     companion object {
         private const val FIRST_PAGE_INDEX = 0
     }
+
+    private val _networkState = MutableStateFlow(false)
+    val networkState = _networkState.asStateFlow()
 
     private val _screenState =
         MutableStateFlow<CharactersScreenState>(CharactersScreenState.Loading)
@@ -35,6 +40,7 @@ class CharactersViewModel @Inject constructor(
     private var nextPageIndex: Int = FIRST_PAGE_INDEX
 
     init {
+        getConnectivity()
         loadNextPage()
     }
 
@@ -49,6 +55,12 @@ class CharactersViewModel @Inject constructor(
     fun onCharacterClicked(characterId: Int) {
         viewModelScope.launch {
             _screenAction.emit(CharacterListScreenAction.NavigateToCharacterDetailAction(characterId))
+        }
+    }
+
+    private fun getConnectivity() {
+        viewModelScope.launch {
+            getNetworkAvailabilityUseCase.execute().collect(_networkState)
         }
     }
 

@@ -3,4 +3,5 @@
     <string name="generic_error_title">Something went wrong!</string>
     <string name="generic_error_retry">Retry</string>
     <string name="generic_image_not_available">Image is not available</string>
+    <string name="offline_subtitle">Enable internet to load more content</string>
 </resources>
