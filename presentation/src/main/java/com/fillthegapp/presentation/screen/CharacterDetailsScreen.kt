@@ -1,38 +1,42 @@
 package com.fillthegapp.presentation.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImagePainter
-import coil.compose.SubcomposeAsyncImage
-import coil.compose.SubcomposeAsyncImageContent
+import coil.compose.AsyncImage
 import com.fillthegapp.presentation.R
 import com.fillthegapp.presentation.model.CharacterViewData
 import com.fillthegapp.presentation.ui.component.ErrorView
@@ -76,143 +80,143 @@ private fun CharacterDetailScreenContent(
     modifier: Modifier,
     state: CharacterDetailScreenState,
 ) {
-    Column(modifier = modifier.fillMaxSize()) {
-        TopAppBar(
-            title = {},
-            navigationIcon = {
-                IconButton(onClick = onBackClicked) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                        contentDescription = null,
-                    )
-                }
+    Box(modifier = modifier.fillMaxSize()) {
+        when (state) {
+            Loading -> {
+                LoaderView()
             }
-        )
-        Box(modifier = modifier.fillMaxSize()) {
-            when (state) {
-                Loading -> {
-                    LoaderView()
-                }
 
-                CharacterDetailScreenState.Error -> {
-                    ErrorView(
-                        onRetryClicked = onRetryClicked,
-                    )
-                }
+            CharacterDetailScreenState.Error -> {
+                ErrorView(
+                    onRetryClicked = onRetryClicked,
+                )
+            }
 
-                is Loaded -> {
-                    CharacterDetailsView(data = state.data)
-                }
+            is Loaded -> {
+                CharacterDetailsView(data = state.data)
             }
         }
+        Icon(
+            modifier = Modifier
+                .clickable { onBackClicked() }
+                .padding(Spacing.medium),
+            imageVector = Icons.AutoMirrored.Default.ArrowBack,
+            contentDescription = null,
+        )
     }
 }
 
 @Composable
-private fun CharacterDetailsView(
+fun CharacterDetailsView(
     modifier: Modifier = Modifier,
     data: CharacterViewData,
 ) {
-    Column(
+    Box(
         modifier = modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+            .background(MaterialTheme.colorScheme.surfaceVariant)
     ) {
-        CharacterImageView(
-            modifier = Modifier.fillMaxWidth(),
-            image = data.image,
+        AsyncImage(
+            model = data.image,
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxSize()
+                .alpha(0.2f)
         )
-        Spacer(modifier = Modifier.height(Spacing.medium))
+
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = Spacing.medium)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(Spacing.medium),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = data.name,
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.primary,
-            )
-            Text(
-                text = data.species,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.secondary,
-            )
-            Text(
-                text = data.gender,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.secondary,
-            )
-            Text(
-                text = data.status,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.secondary,
-            )
-            if (data.type.isNotEmpty()) {
-                Text(
-                    text = data.type,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.secondary,
+            Spacer(modifier = Modifier.height(Spacing.extraLarge))
+
+            Card(
+                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                AsyncImage(
+                    model = data.image,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
                 )
             }
-            Text(
-                text = data.locationName,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.secondary,
-            )
+
+            Spacer(modifier = Modifier.height(Spacing.medium))
+
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                ),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(Spacing.medium)
+                ) {
+                    Text(
+                        text = data.name,
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+
+                    Spacer(modifier = Modifier.height(Spacing.small))
+
+                    CharacterDetailItem(
+                        title = stringResource(R.string.character_description_species),
+                        value = data.species
+                    )
+                    CharacterDetailItem(
+                        title = stringResource(R.string.character_description_gender),
+                        value = data.gender
+                    )
+                    CharacterDetailItem(
+                        title = stringResource(R.string.character_description_status),
+                        value = data.status
+                    )
+                    if (data.type.isNotEmpty()) {
+                        CharacterDetailItem(
+                            title = stringResource(R.string.character_description_type),
+                            value = data.type
+                        )
+                    }
+                    CharacterDetailItem(
+                        title = stringResource(R.string.character_description_location),
+                        value = data.locationName
+                    )
+                }
+            }
         }
     }
 }
 
 @Composable
-private fun CharacterImageView(
-    modifier: Modifier = Modifier,
-    image: String?,
-) {
-    SubcomposeAsyncImage(
-        modifier = modifier,
-        model = image,
-        contentDescription = null,
-        contentScale = ContentScale.Crop,
+fun CharacterDetailItem(title: String, value: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        when (painter.state) {
-            AsyncImagePainter.State.Empty -> {
-                // Do nothing
-            }
-
-            is AsyncImagePainter.State.Error -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(color = MaterialTheme.colorScheme.error.copy(alpha = 0.1f))
-                        .padding(Spacing.small),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(R.string.generic_image_not_available),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.error,
-                        textAlign = TextAlign.Center,
-                    )
-                }
-            }
-
-            is AsyncImagePainter.State.Loading -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    CircularProgressIndicator(modifier = Modifier.size(Spacing.extraLarge))
-                }
-            }
-
-            is AsyncImagePainter.State.Success -> {
-                SubcomposeAsyncImageContent(
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
-        }
+        Text(
+            maxLines = 1,
+            text = title,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+        )
+        Spacer(modifier = Modifier.width(Spacing.medium))
+        Text(
+            modifier = Modifier.weight(1f),
+            text = value,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            textAlign = TextAlign.End,
+            style = MaterialTheme.typography.bodyLarge,
+            color = if (value == stringResource(R.string.alive)) Color(0xFF28A745) else MaterialTheme.colorScheme.onSurface
+        )
     }
 }
