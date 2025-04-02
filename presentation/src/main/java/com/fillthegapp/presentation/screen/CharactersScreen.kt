@@ -19,6 +19,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -46,6 +49,7 @@ fun CharactersScreen(
     viewModel: CharactersViewModel = hiltViewModel(),
 ) {
     val screenState by viewModel.screenState.collectAsState()
+    val networkState by viewModel.networkState.collectAsState()
 
     LaunchedEffect(true) {
         viewModel.screenAction.collect { action ->
@@ -60,6 +64,7 @@ fun CharactersScreen(
     CharactersScreenContent(
         modifier = modifier,
         state = screenState,
+        isNetworkAvailable = networkState,
         onRetryClicked = viewModel::onRetryClicked,
         onMoreItemsRequested = viewModel::onMoreItemsRequested,
         onCharacterClicked = viewModel::onCharacterClicked
@@ -73,6 +78,7 @@ private fun CharactersScreenContent(
     onCharacterClicked: (Int) -> Unit,
     modifier: Modifier,
     state: CharactersScreenState,
+    isNetworkAvailable: Boolean,
 ) {
     Box(modifier = modifier.fillMaxSize()) {
         when (val currentState = state) {
@@ -93,6 +99,22 @@ private fun CharactersScreenContent(
                 )
             }
         }
+
+        if (!isNetworkAvailable) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.error)
+                    .padding(8.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "You're offline",
+                    color = MaterialTheme.colorScheme.onError,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+        }
     }
 }
 
@@ -108,7 +130,6 @@ private fun CharacterListView(
         modifier = modifier.fillMaxSize()
     ) {
         itemsIndexed(data.items) { index, item ->
-            // You can add padding or spacing between items here
             Spacer(modifier = Modifier.height(Spacing.large))
 
             CharacterItemView(
@@ -120,22 +141,21 @@ private fun CharacterListView(
                 onClick = onCharacterClicked
             )
 
-            // To do the infinity scroll effect, just 2 items before the end start loading the next page
             if (index >= data.items.size - 2) {
                 LaunchedEffect(Unit) {
                     onMoreItemsRequested()
                 }
             }
         }
+
         if (isErrorLoadingMore) {
             item {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    CircularProgressIndicator(modifier = Modifier.size(Spacing.extraLarge))
-                }
+                Text(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = Spacing.large),
+                    text = stringResource(R.string.offline_subtitle),
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center
+                )
             }
         }
     }
