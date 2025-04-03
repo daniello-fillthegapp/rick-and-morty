@@ -97,10 +97,7 @@ class CharactersViewModel @Inject constructor(
                     data = current.data.copy(
                         hasMoreItems = newData.hasMoreItems,
                         nextPageIndex = newData.nextPageIndex,
-                        items = mergeItems(
-                            oldItems = current.data.items,
-                            newItems = newData.items.map { CharacterViewData.from(it) }
-                        )
+                        items = current.data.items + newData.items.map { CharacterViewData.from(it) }
                     ),
                     isErrorLoadingMore = false,
                     isLoadingMoreData = false,
@@ -129,27 +126,6 @@ class CharactersViewModel @Inject constructor(
             }
         }
     }
-
-    private fun mergeItems(
-        oldItems: List<CharacterViewData>,
-        newItems: List<CharacterViewData>,
-    ): List<CharacterViewData> {
-        if (oldItems.isEmpty()) return newItems
-        if (newItems.isEmpty()) return oldItems
-
-        val mergedItems = oldItems.toMutableList()
-        val lastOldItem = oldItems.last()
-        val firstNewItem = newItems.first()
-
-        if (lastOldItem.id == firstNewItem.id) {
-            mergedItems.addAll(newItems.drop(1))
-        } else {
-            mergedItems.addAll(newItems)
-        }
-
-        return mergedItems
-    }
-
 }
 
 open class CharactersScreenState(
