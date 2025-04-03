@@ -173,36 +173,47 @@ fun CharacterDetailsView(
                         title = stringResource(R.string.character_description_species),
                         value = data.species
                     )
+
                     CharacterDetailItem(
                         title = stringResource(R.string.character_description_gender),
                         value = data.gender
                     )
+
                     CharacterDetailItem(
                         title = stringResource(R.string.character_description_status),
                         value = data.status
                     )
+
                     if (data.type.isNotEmpty()) {
                         CharacterDetailItem(
                             title = stringResource(R.string.character_description_type),
                             value = data.type
                         )
                     }
+
                     CharacterDetailItem(
                         title = stringResource(R.string.character_description_location),
                         value = data.locationName
                     )
+
+                    if (data.episodes.length <= 2) {
+                        CharacterDetailItem(
+                            title = stringResource(R.string.episode),
+                            value = data.episodes
+                        )
+
+                    } else if (data.episodes.length <= 10) {
+                        CharacterDetailItem(
+                            title = stringResource(R.string.episodes),
+                            value = data.episodes
+                        )
+                    }
                 }
             }
 
-            Spacer(modifier = Modifier.height(Spacing.medium))
+            if (data.episodes.length > 10) {
+                Spacer(modifier = Modifier.height(Spacing.medium))
 
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                ),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-            ) {
                 CharacterEpisodesView(
                     value = data.episodes
                 )
@@ -225,7 +236,9 @@ fun CharacterDetailItem(title: String, value: String) {
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
         )
+
         Spacer(modifier = Modifier.width(Spacing.medium))
+
         Text(
             modifier = Modifier.weight(1f),
             text = value,

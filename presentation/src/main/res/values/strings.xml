@@ -12,4 +12,5 @@
     <string name="alive">Alive</string>
     <string name="dead">Dead</string>
     <string name="episodes">Episodes</string>
+    <string name="episode">Episode</string>
 </resources>
