@@ -1,13 +1,13 @@
 package com.apiumhub.domain.usecase
 
-import com.apiumhub.domain.repository.NetworkRepository
-import kotlinx.coroutines.flow.Flow
+import com.apiumhub.domain.repository.ConnectivityRepository
+import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 class GetNetworkAvailabilityUseCase @Inject constructor(
-    private val networkRepository: NetworkRepository
+    private val connectivityRepository: ConnectivityRepository
 ) {
-    fun execute(): Flow<Boolean> {
-        return networkRepository.isNetworkAvailable()
+    fun execute(): StateFlow<Boolean> {
+        return connectivityRepository.isNetworkAvailable()
     }
 }

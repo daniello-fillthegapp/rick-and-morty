@@ -1,12 +1,12 @@
 package com.apiumhub.data.di
 
 import com.apiumhub.data.datasource.LocalDataSource
-import com.apiumhub.data.datasource.NetworkDataSource
+import com.apiumhub.data.datasource.ConnectivityDataSource
 import com.apiumhub.data.datasource.RemoteDataSource
 import com.apiumhub.data.repository.CharacterRepositoryImpl
-import com.apiumhub.data.repository.NetworkRepositoryImpl
+import com.apiumhub.data.repository.ConnectivityRepositoryImpl
 import com.apiumhub.domain.repository.CharacterRepository
-import com.apiumhub.domain.repository.NetworkRepository
+import com.apiumhub.domain.repository.ConnectivityRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -32,10 +32,10 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun provideNetworkRepository(
-        networkDataSource: NetworkDataSource
-    ): NetworkRepository {
-        return NetworkRepositoryImpl(
-            networkDataSource = networkDataSource
+        connectivityDataSource: ConnectivityDataSource
+    ): ConnectivityRepository {
+        return ConnectivityRepositoryImpl(
+            connectivityDataSource = connectivityDataSource
         )
     }
 }
