@@ -118,6 +118,7 @@ class CharactersViewModel @Inject constructor(
     private fun onPageLoadFailure(error: Throwable) {
         Log.e(this.javaClass.name, error.message, error)
         val currentState = _screenState.value
+
         if (currentState is CharactersScreenState.Loading) {
             _screenState.update { CharactersScreenState.Error }
         } else if (currentState is CharactersScreenState.Loaded) {
@@ -160,7 +161,7 @@ open class CharactersScreenState(
         val isErrorLoadingMore: Boolean,
         val isLoadingMoreData: Boolean,
         val data: PaginatedCharacterListViewData,
-    ) : CharactersScreenState(data.hasMoreItems)
+    ) : CharactersScreenState(data.hasMoreItems && (!isLoadingMoreData || isErrorLoadingMore))
 }
 
 sealed class CharacterListScreenAction {
