@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.fillthegapp.presentation"
+    namespace = "com.apiumhub.presentation"
     compileSdk = 35
 
     defaultConfig {
