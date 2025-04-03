@@ -1,5 +1,6 @@
 package com.fillthegapp.data.repository
 
+import android.util.Log
 import com.fillthegapp.data.datasource.LocalDataSource
 import com.fillthegapp.data.datasource.RemoteDataSource
 import com.fillthegapp.data.model.entity.CharacterEntity
@@ -31,7 +32,8 @@ class CharacterRepositoryImpl(
                 }
 
                 val charactersPageResponse = remoteDataSource.getCharactersPage(index)
-                val characterEntities = charactersPageResponse.characterResponseList.map { it.toEntity() }
+                val characterEntities =
+                    charactersPageResponse.characterResponseList.map { it.toEntity() }
                 val localMediaCharacterEntities = downloadCharacterEntitiesMedia(characterEntities)
 
                 localDataSource.insertCharacters(localMediaCharacterEntities)
@@ -62,16 +64,20 @@ class CharacterRepositoryImpl(
     }
 
     private suspend fun downloadImage(url: String): String {
-        val remoteData = remoteDataSource.downloadMedia(url)
-        val body = remoteData.body()?.bytes()
-        if (remoteData.isSuccessful && body != null) {
-            val localStoredFilePath = localDataSource.storeMediaImage(
-                imageUrl = url,
-                imageData = body
-            )
-            if (localStoredFilePath != null) {
-                return localStoredFilePath
+        try {
+            val remoteData = remoteDataSource.downloadMedia(url)
+            val body = remoteData.body()?.bytes()
+            if (remoteData.isSuccessful && body != null) {
+                val localStoredFilePath = localDataSource.storeMediaImage(
+                    imageUrl = url,
+                    imageData = body
+                )
+                if (localStoredFilePath != null) {
+                    return localStoredFilePath
+                }
             }
+        } catch (e: Exception) {
+            Log.e(this.javaClass.name, e.message, e)
         }
 
         return url
