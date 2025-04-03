@@ -43,10 +43,9 @@ This Android app is built around **Clean Architecture**, using **Jetpack Compose
 │   ├── usecase
 │   └── model
 ├── presentation
-│   ├── screen
-│   ├── ui
-│   └── viewmodel
-└── utils
+    ├── screen
+    ├── ui
+    └── viewmodel
 ```
 ## Testing
 The **data layer** of this project is thoroughly tested using **unit tests** to ensure the correctness and reliability of the data handling components such as repositories, data sources, and network operations.
