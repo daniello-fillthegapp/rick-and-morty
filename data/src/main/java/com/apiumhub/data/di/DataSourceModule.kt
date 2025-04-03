@@ -2,7 +2,7 @@ package com.apiumhub.data.di
 
 import android.content.Context
 import androidx.room.Room
-import com.apiumhub.data.datasource.NetworkDataSource
+import com.apiumhub.data.datasource.ConnectivityDataSource
 import com.apiumhub.data.datasource.RemoteDataSource
 import com.apiumhub.data.persistance.CharacterDao
 import com.apiumhub.data.persistance.CharacterDatabase
@@ -45,7 +45,7 @@ object DataSourceModule {
 
     @Provides
     @Singleton
-    fun provideNetworkDataSource(@ApplicationContext context: Context): NetworkDataSource {
-        return NetworkDataSource(context)
+    fun provideNetworkDataSource(@ApplicationContext context: Context): ConnectivityDataSource {
+        return ConnectivityDataSource(context)
     }
 }

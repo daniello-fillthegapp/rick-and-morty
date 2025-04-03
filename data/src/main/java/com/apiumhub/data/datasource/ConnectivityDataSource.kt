@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
-class NetworkDataSource @Inject constructor(
+class ConnectivityDataSource @Inject constructor(
     context: Context
 ) {
     private val mConnectivityManager =
