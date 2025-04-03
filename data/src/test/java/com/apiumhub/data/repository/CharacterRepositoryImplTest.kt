@@ -43,15 +43,15 @@ class CharacterRepositoryImplTest {
         val localCharacters = listOf(
             CharacterEntity(
                 id = 1,
-                name = "Rick",
+                name = "name",
                 image = "image",
-                status = "alive",
-                species = "human",
-                type = "",
-                gender = "male",
+                status = "status",
+                species = "species",
+                type = "type",
+                gender = "gender",
                 url = "url",
-                creationDate = "",
-                originName = "Earth",
+                creationDate = "creationDate",
+                originName = "originName",
                 originUrl = "originUrl",
                 locationName = "locationName",
                 locationUrl = "locationUrl",
@@ -64,16 +64,16 @@ class CharacterRepositoryImplTest {
             items = listOf(
                 CharacterModel(
                     id = 1,
-                    name = "Rick",
+                    name = "name",
                     image = "image",
-                    status = "alive",
-                    species = "human",
-                    type = "",
-                    gender = "male",
+                    status = "status",
+                    species = "species",
+                    type = "type",
+                    gender = "gender",
                     url = "url",
-                    creationDate = "",
+                    creationDate = "creationDate",
                     origin = LocationModel(
-                        name = "Earth",
+                        name = "originName",
                         url = "originUrl"
                     ),
                     location = LocationModel(
@@ -114,16 +114,16 @@ class CharacterRepositoryImplTest {
             characterResponseList = listOf(
                 CharacterResponse(
                     id = 1,
-                    name = "Rick",
+                    name = "name",
                     image = "image",
-                    status = "alive",
-                    species = "human",
-                    type = "",
-                    gender = "male",
+                    status = "status",
+                    species = "species",
+                    type = "type",
+                    gender = "gender",
                     url = "url",
-                    creationDate = "",
+                    creationDate = "creationDate",
                     origin = LocationResponse(
-                        name = "Earth",
+                        name = "originName",
                         url = "originUrl"
                     ),
                     location = LocationResponse(
@@ -143,16 +143,16 @@ class CharacterRepositoryImplTest {
             items = listOf(
                 CharacterModel(
                     id = 1,
-                    name = "Rick",
+                    name = "name",
                     image = "image",
-                    status = "alive",
-                    species = "human",
-                    type = "",
-                    gender = "male",
+                    status = "status",
+                    species = "species",
+                    type = "type",
+                    gender = "gender",
                     url = "url",
-                    creationDate = "",
+                    creationDate = "creationDate",
                     origin = LocationModel(
-                        name = "Earth",
+                        name = "originName",
                         url = "originUrl"
                     ),
                     location = LocationModel(
@@ -186,15 +186,15 @@ class CharacterRepositoryImplTest {
         val id = 1
         val characterEntity = CharacterEntity(
             id = 1,
-            name = "Rick",
+            name = "name",
             image = "image",
-            status = "alive",
-            species = "human",
-            type = "",
-            gender = "male",
+            status = "status",
+            species = "species",
+            type = "type",
+            gender = "gender",
             url = "url",
-            creationDate = "",
-            originName = "Earth",
+            creationDate = "creationDate",
+            originName = "originName",
             originUrl = "originUrl",
             locationName = "locationName",
             locationUrl = "locationUrl",
@@ -204,16 +204,16 @@ class CharacterRepositoryImplTest {
 
         val expectedModel = CharacterModel(
             id = 1,
-            name = "Rick",
+            name = "name",
             image = "image",
-            status = "alive",
-            species = "human",
-            type = "",
-            gender = "male",
+            status = "status",
+            species = "species",
+            type = "type",
+            gender = "gender",
             url = "url",
-            creationDate = "",
+            creationDate = "creationDate",
             origin = LocationModel(
-                name = "Earth",
+                name = "originName",
                 url = "originUrl"
             ),
             location = LocationModel(
@@ -243,16 +243,16 @@ class CharacterRepositoryImplTest {
         // And: Remote returns a valid response
         val remoteCharacter = CharacterResponse(
             id = 1,
-            name = "Rick",
+            name = "name",
             image = "image",
-            status = "alive",
-            species = "human",
-            type = "",
-            gender = "male",
+            status = "status",
+            species = "species",
+            type = "type",
+            gender = "gender",
             url = "url",
-            creationDate = "",
+            creationDate = "creationDate",
             origin = LocationResponse(
-                name = "Earth",
+                name = "originName",
                 url = "originUrl"
             ),
             location = LocationResponse(
@@ -265,16 +265,16 @@ class CharacterRepositoryImplTest {
 
         val expectedModel = CharacterModel(
             id = 1,
-            name = "Rick",
+            name = "name",
             image = "image",
-            status = "alive",
-            species = "human",
-            type = "",
-            gender = "male",
+            status = "status",
+            species = "species",
+            type = "type",
+            gender = "gender",
             url = "url",
-            creationDate = "",
+            creationDate = "creationDate",
             origin = LocationModel(
-                name = "Earth",
+                name = "originName",
                 url = "originUrl"
             ),
             location = LocationModel(
