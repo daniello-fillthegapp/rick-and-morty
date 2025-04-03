@@ -29,8 +29,8 @@ object RepositoryModule {
         )
     }
 
-    @Singleton
     @Provides
+    @Singleton
     fun provideNetworkRepository(
         networkDataSource: NetworkDataSource
     ): NetworkRepository {

@@ -31,13 +31,13 @@ class CharacterRepositoryImpl(
                 }
 
                 val charactersPageResponse = remoteDataSource.getCharactersPage(index)
-                val entities = charactersPageResponse.characterResponseList.map { it.toEntity() }
-                val downloadedEntities = downloadEntities(entities)
+                val characterEntities = charactersPageResponse.characterResponseList.map { it.toEntity() }
+                val localMediaCharacterEntities = downloadCharacterEntitiesMedia(characterEntities)
 
-                localDataSource.insertCharacters(downloadedEntities)
+                localDataSource.insertCharacters(localMediaCharacterEntities)
 
                 PaginatedCharacterListModel(
-                    items = downloadedEntities.map { it.toDomain() },
+                    items = localMediaCharacterEntities.map { it.toDomain() },
                     hasMoreItems = charactersPageResponse.pageInfoResponse.nextPageUrl.orEmpty()
                         .isNotEmpty(),
                     nextPageIndex = index.inc()
@@ -55,7 +55,7 @@ class CharacterRepositoryImpl(
         }
     }
 
-    private suspend fun downloadEntities(entities: List<CharacterEntity>): List<CharacterEntity> {
+    private suspend fun downloadCharacterEntitiesMedia(entities: List<CharacterEntity>): List<CharacterEntity> {
         return entities.map { character ->
             character.copy(image = downloadImage(character.image))
         }

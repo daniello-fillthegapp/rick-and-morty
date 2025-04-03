@@ -16,9 +16,7 @@ fun RickAndMortyNavHost(
         navController = navController,
         startDestination = AppRoute.Characters.route
     ) {
-        addCharacterListRoute(onNavigateToDetails = { id ->
-            navController.navigateToDetails(id)
-        })
+        addCharacterListRoute(onNavigateToDetails = { id -> navController.navigateToDetails(id) })
         addCharacterDetailsRoute(onNavigateBack = { navController.navigateUp() })
     }
 }

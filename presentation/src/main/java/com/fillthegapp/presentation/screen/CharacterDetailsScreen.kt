@@ -2,9 +2,11 @@ package com.fillthegapp.presentation.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,6 +31,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
@@ -190,6 +193,20 @@ fun CharacterDetailsView(
                     )
                 }
             }
+
+            Spacer(modifier = Modifier.height(Spacing.medium))
+
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                ),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            ) {
+                CharacterEpisodesView(
+                    value = data.episodes
+                )
+            }
         }
     }
 }
@@ -212,11 +229,75 @@ fun CharacterDetailItem(title: String, value: String) {
         Text(
             modifier = Modifier.weight(1f),
             text = value,
-            maxLines = 1,
+            maxLines = 2,
             overflow = TextOverflow.Ellipsis,
             textAlign = TextAlign.End,
             style = MaterialTheme.typography.bodyLarge,
-            color = if (value == stringResource(R.string.alive)) Color(0xFF28A745) else MaterialTheme.colorScheme.onSurface
+            color = when (value) {
+                stringResource(R.string.alive) -> Color.Green
+                stringResource(R.string.dead) -> Color.Red
+                else -> MaterialTheme.colorScheme.onSurface
+            }
         )
+    }
+}
+
+@Composable
+fun CharacterEpisodesView(value: String) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+    ) {
+        Column(
+            modifier = Modifier.padding(
+                start = Spacing.medium,
+                top = Spacing.medium,
+                bottom = Spacing.medium
+            )
+        ) {
+            Text(
+                maxLines = 1,
+                text = stringResource(R.string.episodes),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+
+            Spacer(modifier = Modifier.height(Spacing.medium))
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(IntrinsicSize.Min)
+            ) {
+                Text(
+                    modifier = Modifier
+                        .horizontalScroll(rememberScrollState())
+                        .padding(end = 16.dp),
+                    text = value,
+                    maxLines = 1,
+                    overflow = TextOverflow.Visible,
+                    textAlign = TextAlign.Start,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            Brush.horizontalGradient(
+                                listOf(
+                                    Color.Transparent,
+                                    MaterialTheme.colorScheme.surface
+                                ),
+                                startX = 800f,
+                            )
+                        )
+                )
+            }
+        }
     }
 }

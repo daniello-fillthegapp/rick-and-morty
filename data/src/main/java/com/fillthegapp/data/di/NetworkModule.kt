@@ -7,7 +7,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -22,12 +21,12 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    @NetworkBaseUrl
     fun provideNetworkBaseUrl(): String {
         return BuildConfig.BASE_URL
     }
 
     @Provides
+    @Singleton
     fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
         return HttpLoggingInterceptor().apply {
             level = if (BuildConfig.DEBUG) {
@@ -49,9 +48,8 @@ object NetworkModule {
     }
 
     @OptIn(ExperimentalSerializationApi::class)
-    @Singleton
     @Provides
-    @JSONConverter
+    @Singleton
     fun provideJsonConverterFactory(): Converter.Factory {
         val json = Json {
             ignoreUnknownKeys = true
@@ -60,11 +58,11 @@ object NetworkModule {
         return json.asConverterFactory("application/json".toMediaType())
     }
 
-    @Singleton
     @Provides
+    @Singleton
     fun provideRetrofitClient(
-        @NetworkBaseUrl baseUrl: String,
-        @JSONConverter jsonConverter: Converter.Factory,
+        baseUrl: String,
+        jsonConverter: Converter.Factory,
         okHttpClient: OkHttpClient,
     ): Retrofit {
         return Retrofit.Builder()

@@ -43,8 +43,8 @@ object DataSourceModule {
         return retrofit.create(RemoteDataSource::class.java)
     }
 
-    @Singleton
     @Provides
+    @Singleton
     fun provideNetworkDataSource(@ApplicationContext context: Context): NetworkDataSource {
         return NetworkDataSource(context)
     }

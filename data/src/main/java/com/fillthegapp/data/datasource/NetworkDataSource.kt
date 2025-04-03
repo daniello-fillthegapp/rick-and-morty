@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 class NetworkDataSource @Inject constructor(
-    private val context: Context
+    context: Context
 ) {
     private val mConnectivityManager =
         context.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager

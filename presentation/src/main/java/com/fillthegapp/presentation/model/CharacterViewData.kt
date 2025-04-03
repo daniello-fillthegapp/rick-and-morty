@@ -13,6 +13,7 @@ data class CharacterViewData(
     val creationDate: String,
     val originName: String,
     val locationName: String,
+    val episodes: String
 ) {
     companion object {
         fun from(model: CharacterModel): CharacterViewData {
@@ -26,8 +27,13 @@ data class CharacterViewData(
                 image = model.image,
                 creationDate = model.creationDate,
                 originName = model.origin.name,
-                locationName = model.location.name
+                locationName = model.location.name,
+                episodes = getChaptersViewData(model.episodeList)
             )
+        }
+
+        private fun getChaptersViewData(strings: List<String>): String {
+            return strings.joinToString(", ") { it.substringAfterLast("/") }
         }
     }
 }

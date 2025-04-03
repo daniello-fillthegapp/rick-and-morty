@@ -10,4 +10,6 @@
     <string name="character_description_type">Type</string>
     <string name="character_description_location">Location</string>
     <string name="alive">Alive</string>
+    <string name="dead">Dead</string>
+    <string name="episodes">Episodes</string>
 </resources>

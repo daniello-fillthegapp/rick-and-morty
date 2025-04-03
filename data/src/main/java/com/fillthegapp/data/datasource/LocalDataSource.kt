@@ -15,12 +15,10 @@ class LocalDataSource @Inject constructor(
     suspend fun getCharactersPage(pageIndex: Int, pageSize: Int = 19): List<CharacterEntity> {
         val offset = pageIndex * pageSize
         val charactersPage = characterDao.getCharactersPage(limit = pageSize, offset = offset)
-        Log.d("DatabaseTest", "Retrieving characters for page index $pageIndex: $charactersPage")
         return charactersPage
     }
 
     suspend fun insertCharacters(characters: List<CharacterEntity>) {
-        Log.d("DatabaseTest", "Inserting characters: $characters")
         characterDao.insertCharacters(characters)
     }
 
