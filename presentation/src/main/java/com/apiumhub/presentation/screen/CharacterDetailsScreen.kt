@@ -99,6 +99,7 @@ private fun CharacterDetailScreenContent(
                 CharacterDetailsView(data = state.data)
             }
         }
+
         Icon(
             modifier = Modifier
                 .clickable { onBackClicked() }
@@ -138,7 +139,7 @@ fun CharacterDetailsView(
             Spacer(modifier = Modifier.height(Spacing.extraLarge))
 
             Card(
-                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = DEFAULT_ELEVATION.dp),
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 AsyncImage(
@@ -156,7 +157,7 @@ fun CharacterDetailsView(
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.surface
                 ),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                elevation = CardDefaults.cardElevation(defaultElevation = DEFAULT_ELEVATION.dp)
             ) {
                 Column(
                     modifier = Modifier.padding(Spacing.medium)
@@ -179,10 +180,7 @@ fun CharacterDetailsView(
                         value = data.gender
                     )
 
-                    CharacterDetailItem(
-                        title = stringResource(R.string.character_description_status),
-                        value = data.status
-                    )
+                    CharacterStatusDetailItem(value = data.status)
 
                     if (data.type.isNotEmpty()) {
                         CharacterDetailItem(
@@ -227,12 +225,41 @@ fun CharacterDetailItem(title: String, value: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
+            .padding(vertical = Spacing.extraSmall),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
             maxLines = 1,
             text = title,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+        )
+
+        Spacer(modifier = Modifier.width(Spacing.medium))
+
+        Text(
+            modifier = Modifier.weight(1f),
+            text = value,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+            textAlign = TextAlign.End,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+    }
+}
+
+@Composable
+fun CharacterStatusDetailItem(value: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = Spacing.extraSmall),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            maxLines = 1,
+            text = stringResource(R.string.character_description_status),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
         )
@@ -259,7 +286,7 @@ fun CharacterDetailItem(title: String, value: String) {
 fun CharacterEpisodesView(value: String) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = DEFAULT_ELEVATION.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),
@@ -288,7 +315,7 @@ fun CharacterEpisodesView(value: String) {
                 Text(
                     modifier = Modifier
                         .horizontalScroll(rememberScrollState())
-                        .padding(end = 16.dp),
+                        .padding(end = Spacing.medium),
                     text = value,
                     maxLines = 1,
                     overflow = TextOverflow.Visible,
@@ -314,3 +341,5 @@ fun CharacterEpisodesView(value: String) {
         }
     }
 }
+
+private const val DEFAULT_ELEVATION = 4

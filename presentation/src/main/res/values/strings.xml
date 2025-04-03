@@ -13,4 +13,5 @@
     <string name="dead">Dead</string>
     <string name="episodes">Episodes</string>
     <string name="episode">Episode</string>
+    <string name="offline_banner">You\'re offline</string>
 </resources>

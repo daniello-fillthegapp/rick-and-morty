@@ -17,7 +17,7 @@ class ConnectivityDataSource @Inject constructor(
     private val mConnectivityManager =
         context.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
 
-    private val _isNetworkAvailable = MutableStateFlow(false)
+    private val _isNetworkAvailable = MutableStateFlow(true)
 
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {

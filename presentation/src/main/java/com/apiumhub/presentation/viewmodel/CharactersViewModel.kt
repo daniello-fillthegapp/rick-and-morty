@@ -27,7 +27,7 @@ class CharactersViewModel @Inject constructor(
         private const val FIRST_PAGE_INDEX = 0
     }
 
-    private val _networkState = MutableStateFlow(false)
+    private val _networkState = MutableStateFlow(true)
     val networkState = _networkState.asStateFlow()
 
     private val _screenState =

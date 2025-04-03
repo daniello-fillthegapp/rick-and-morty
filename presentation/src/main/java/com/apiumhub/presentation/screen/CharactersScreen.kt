@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -42,6 +41,7 @@ import com.apiumhub.presentation.model.CharacterViewData
 import com.apiumhub.presentation.model.PaginatedCharacterListViewData
 import com.apiumhub.presentation.ui.component.ErrorView
 import com.apiumhub.presentation.ui.component.LoaderView
+import com.apiumhub.presentation.ui.theme.Shapes
 import com.apiumhub.presentation.ui.theme.Spacing
 import com.apiumhub.presentation.viewmodel.CharacterListScreenAction
 import com.apiumhub.presentation.viewmodel.CharactersScreenState
@@ -111,11 +111,11 @@ private fun CharactersScreenContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.error)
-                    .padding(8.dp),
+                    .padding(Spacing.small),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "You're offline",
+                    text = stringResource(R.string.offline_banner),
                     color = MaterialTheme.colorScheme.onError,
                     style = MaterialTheme.typography.bodyMedium
                 )
@@ -123,6 +123,7 @@ private fun CharactersScreenContent(
         }
     }
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -150,7 +151,8 @@ private fun CharacterListView(
                 onClick = onCharacterClicked
             )
 
-            if (index > data.items.size - 4) {
+            //start loading before user reaches the image.
+            if (index > data.items.size - AVERAGE_ITEMS_DISPLAYED) {
                 LaunchedEffect(Unit) {
                     onMoreItemsRequested()
                 }
@@ -194,15 +196,15 @@ fun CharacterItemView(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .shadow(8.dp, RoundedCornerShape(16.dp))
-            .clip(RoundedCornerShape(16.dp))
+            .shadow(8.dp, Shapes.large)
+            .clip(Shapes.large)
             .clickable { onClick(data.id) }
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(180.dp)
-                .clip(RoundedCornerShape(16.dp))
+                .clip(Shapes.large)
         ) {
             CharacterItemImageView(
                 modifier = Modifier.fillMaxSize(),
@@ -222,14 +224,14 @@ fun CharacterItemView(
                             MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
                         ),
                     ),
-                    shape = RoundedCornerShape(16.dp)
+                    shape = Shapes.large
                 )
         )
 
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(Spacing.medium)
                 .align(Alignment.BottomStart)
         ) {
             Text(
@@ -280,8 +282,7 @@ fun CharacterItemImageView(modifier: Modifier, image: String?) {
 
             is AsyncImagePainter.State.Loading -> {
                 Box(
-                    modifier = Modifier
-                        .fillMaxSize(),
+                    modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center,
                 ) {
                     CircularProgressIndicator(modifier = Modifier.size(Spacing.extraLarge))
@@ -296,3 +297,5 @@ fun CharacterItemImageView(modifier: Modifier, image: String?) {
         }
     }
 }
+
+private const val AVERAGE_ITEMS_DISPLAYED = 5
