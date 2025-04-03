@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">Rick and Morty</string>
+    <string name="generic_error_title">Something went wrong!</string>
+    <string name="generic_error_retry">Retry</string>
+    <string name="generic_image_not_available">Image is not available</string>
+    <string name="offline_subtitle">Enable internet to load more content</string>
+    <string name="character_description_species">Species</string>
+    <string name="character_description_gender">Gender</string>
+    <string name="character_description_status">Status</string>
+    <string name="character_description_type">Type</string>
+    <string name="character_description_location">Location</string>
+    <string name="alive">Alive</string>
+    <string name="dead">Dead</string>
+    <string name="episodes">Episodes</string>
+    <string name="episode">Episode</string>
 </resources>

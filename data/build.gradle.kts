@@ -45,15 +45,27 @@ dependencies {
     implementation(project(":domain"))
 
     ksp(libs.hilt.android.compiler)
+    ksp(libs.androidx.room.compiler)
     implementation(libs.hilt.android)
     implementation(libs.retrofit)
     implementation(libs.retrofit.kotlinx.serialization.converter)
     implementation(libs.kotlin.serialization.json)
     implementation(libs.androidx.core.ktx)
+    implementation(libs.logging.interceptor)
     implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    //Testing
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.junit.jupiter)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.mockito.inline)
+    testImplementation(libs.kotlin.test)
+
+    androidTestImplementation(libs.mockito.android)
 }
