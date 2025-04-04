@@ -1,6 +1,5 @@
 package com.apiumhub.presentation.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.apiumhub.domain.model.PaginatedCharacterListModel
@@ -101,7 +100,6 @@ class CharactersViewModel @Inject constructor(
     }
 
     private fun onPageLoadFailure(error: Throwable) {
-        Log.e(this.javaClass.name, error.message, error)
         val currentState = _screenState.value
 
         if (currentState is CharactersScreenState.Loading) {

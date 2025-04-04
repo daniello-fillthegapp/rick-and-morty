@@ -1,6 +1,5 @@
 package com.apiumhub.presentation.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -63,7 +62,6 @@ class CharacterDetailViewModel @Inject constructor(
 
     private fun onRequestDetailsFailure(error: Throwable) {
         _screenState.update {
-            Log.e(this.javaClass.name, error.message, error)
             CharacterDetailScreenState.Error
         }
     }
