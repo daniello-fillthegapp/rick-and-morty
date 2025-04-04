@@ -29,7 +29,7 @@ class CharactersViewModelTest {
     )
 
     @Test
-    fun loads_first_page_successfuly() = runBlocking {
+    fun `loads first page successfuly`() = runBlocking {
         whenever(getCharactersPageUseCase.execute(0)).thenReturn(Result.success(dummyPage))
 
         viewModel = CharactersViewModel(getCharactersPageUseCase, observeNetworkAvailabilityUseCase)
@@ -39,8 +39,8 @@ class CharactersViewModelTest {
     }
 
     @Test
-    fun shows_error_when_loading_first_page_fails() = runBlocking {
-        whenever(getCharactersPageUseCase.execute(0)).thenReturn(Result.failure(Exception("Oops")))
+    fun `shows error when loading first page fails`() = runBlocking {
+        whenever(getCharactersPageUseCase.execute(0)).thenReturn(Result.failure(Exception("Error")))
 
         viewModel = CharactersViewModel(getCharactersPageUseCase, observeNetworkAvailabilityUseCase)
 
