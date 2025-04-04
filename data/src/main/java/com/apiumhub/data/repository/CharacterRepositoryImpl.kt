@@ -12,8 +12,6 @@ import com.apiumhub.domain.repository.CharacterRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-private const val LAST_PAGE_INDEX = 42
-
 class CharacterRepositoryImpl(
     private val remoteDataSource: RemoteDataSource,
     private val localDataSource: LocalDataSource,
@@ -26,7 +24,7 @@ class CharacterRepositoryImpl(
                 if (localCharacters.isNotEmpty()) {
                     return@runCatching PaginatedCharacterListModel(
                         items = localCharacters.map { it.toDomain() },
-                        hasMoreItems = index < LAST_PAGE_INDEX,
+                        hasMoreItems = true,
                         nextPageIndex = index.inc()
                     )
                 }
@@ -40,8 +38,7 @@ class CharacterRepositoryImpl(
 
                 PaginatedCharacterListModel(
                     items = localMediaCharacterEntities.map { it.toDomain() },
-                    hasMoreItems = charactersPageResponse.pageInfoResponse.nextPageUrl.orEmpty()
-                        .isNotEmpty(),
+                    hasMoreItems = charactersPageResponse.pageInfoResponse.nextPageUrl != null,
                     nextPageIndex = index.inc()
                 )
             }

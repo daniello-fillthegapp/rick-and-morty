@@ -4,7 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -12,8 +13,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,12 +36,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import com.apiumhub.presentation.R
+import com.apiumhub.presentation.model.CharacterStatus
 import com.apiumhub.presentation.model.CharacterViewData
 import com.apiumhub.presentation.model.PaginatedCharacterListViewData
 import com.apiumhub.presentation.ui.component.ErrorView
@@ -54,7 +61,7 @@ fun CharactersScreen(
     viewModel: CharactersViewModel = hiltViewModel(),
 ) {
     val screenState by viewModel.screenState.collectAsState()
-    val networkState by viewModel.networkState.collectAsState()
+    val isNetworkAvailableState by viewModel.isNetworkAvailableState.collectAsState()
 
     LaunchedEffect(true) {
         viewModel.screenAction.collect { action ->
@@ -69,7 +76,7 @@ fun CharactersScreen(
     CharactersScreenContent(
         modifier = modifier,
         state = screenState,
-        isNetworkAvailable = networkState,
+        isNetworkAvailable = isNetworkAvailableState,
         onRetryClicked = viewModel::onRetryClicked,
         onMoreItemsRequested = viewModel::onMoreItemsRequested,
         onCharacterClicked = viewModel::onCharacterClicked,
@@ -81,9 +88,9 @@ private fun CharactersScreenContent(
     onRetryClicked: () -> Unit,
     onMoreItemsRequested: () -> Unit,
     onCharacterClicked: (Int) -> Unit,
-    modifier: Modifier,
     state: CharactersScreenState,
     isNetworkAvailable: Boolean,
+    modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier.fillMaxSize()) {
         when (val currentState = state) {
@@ -99,7 +106,8 @@ private fun CharactersScreenContent(
                 CharacterListView(
                     onMoreItemsRequested = onMoreItemsRequested,
                     onCharacterClicked = onCharacterClicked,
-                    isErrorLoadingMore = currentState.isErrorLoadingMore && !isNetworkAvailable,
+                    isErrorLoadingMore = currentState.isErrorLoadingMore,
+                    isNetworkAvailable = isNetworkAvailable,
                     data = currentState.data,
                     isLoadingMoreData = currentState.isLoadingMoreData
                 )
@@ -130,17 +138,17 @@ private fun CharactersScreenContent(
 private fun CharacterListView(
     onMoreItemsRequested: () -> Unit,
     onCharacterClicked: (Int) -> Unit,
-    modifier: Modifier = Modifier,
     isErrorLoadingMore: Boolean,
     isLoadingMoreData: Boolean,
+    isNetworkAvailable: Boolean,
     data: PaginatedCharacterListViewData,
+    modifier: Modifier = Modifier,
 ) {
-    LazyColumn(modifier = modifier.fillMaxSize()) {
+    LazyColumn(
+        modifier = modifier.fillMaxSize(),
+        contentPadding = PaddingValues(vertical = Spacing.large)
+    ) {
         itemsIndexed(data.items) { index, item ->
-            if (index == 0) {
-                Spacer(modifier = Modifier.height(Spacing.large))
-            }
-
             CharacterItemView(
                 modifier = Modifier.padding(
                     start = Spacing.medium,
@@ -159,7 +167,7 @@ private fun CharacterListView(
             }
         }
 
-        if (isLoadingMoreData && !isErrorLoadingMore) {
+        if (isLoadingMoreData) {
             item {
                 Box(
                     modifier = Modifier
@@ -172,7 +180,40 @@ private fun CharacterListView(
             }
         }
 
-        if (isErrorLoadingMore) {
+        if (isNetworkAvailable && isErrorLoadingMore) {
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(vertical = Spacing.medium),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .clip(Shapes.large)
+                            .clickable { onMoreItemsRequested() }) {
+                        Text(
+                            modifier = Modifier.padding(Spacing.small),
+                            text = stringResource(R.string.click_to_load_more_content),
+                            style = MaterialTheme.typography.titleSmall,
+                        )
+                        IconButton(
+                            modifier = Modifier.size(Spacing.extraLarge),
+                            onClick = {},
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Refresh,
+                                contentDescription = null,
+                            )
+                        }
+                    }
+
+                }
+            }
+        }
+
+        if (!isNetworkAvailable) {
             item {
                 Text(
                     modifier = Modifier
@@ -190,8 +231,8 @@ private fun CharacterListView(
 @Composable
 fun CharacterItemView(
     onClick: (Int) -> Unit,
-    modifier: Modifier,
     data: CharacterViewData,
+    modifier: Modifier = Modifier,
 ) {
     Box(
         modifier = modifier
@@ -250,7 +291,7 @@ fun CharacterItemView(
 }
 
 @Composable
-fun CharacterItemImageView(modifier: Modifier, image: String?) {
+fun CharacterItemImageView(image: String?, modifier: Modifier = Modifier) {
     SubcomposeAsyncImage(
         modifier = modifier,
         model = image,
@@ -299,3 +340,126 @@ fun CharacterItemImageView(modifier: Modifier, image: String?) {
 }
 
 private const val AVERAGE_ITEMS_DISPLAYED = 5
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewCharacterItemView() {
+    val testData = CharacterViewData(
+        id = 1,
+        name = "Rick Sanchez",
+        locationName = "Earth",
+        image = "",
+        species = "",
+        type = "",
+        gender = "",
+        creationDate = "",
+        originName = "",
+        episodesLabel = "",
+        episodesAmount = 1,
+        status = CharacterStatus.ALIVE
+    )
+
+    CharacterItemView(
+        onClick = {},
+        modifier = Modifier.padding(16.dp),
+        data = testData
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewCharactersScreenOnError() {
+    CharactersScreenContent(
+        modifier = Modifier,
+        state = CharactersScreenState.Error,
+        isNetworkAvailable = true,
+        onRetryClicked = {},
+        onMoreItemsRequested = {},
+        onCharacterClicked = {}
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewCharactersScreenOnLoading() {
+    CharactersScreenContent(
+        modifier = Modifier,
+        state = CharactersScreenState.Loading,
+        isNetworkAvailable = true,
+        onRetryClicked = {},
+        onMoreItemsRequested = {},
+        onCharacterClicked = {}
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewCharactersScreenOnLoaded() {
+    CharactersScreenContent(
+        modifier = Modifier,
+        state = CharactersScreenState.Loaded(
+            isLoadingMoreData = false,
+            isErrorLoadingMore = false,
+            data = PaginatedCharacterListViewData(
+                hasMoreItems = true,
+                nextPageIndex = 2,
+                items = listOf(
+                    CharacterViewData(
+                        name = "Rick Sanchez",
+                        species = "Human",
+                        gender = "Male",
+                        status = CharacterStatus.DEAD,
+                        type = "",
+                        locationName = "Earth",
+                        episodesAmount = 9,
+                        episodesLabel = "1, 2, 3, 4, 5, 6, 7, 8, 9",
+                        image = "",
+                        id = 0,
+                        creationDate = "",
+                        originName = "Earth"
+                    )
+                )
+            )
+        ),
+        isNetworkAvailable = true,
+        onRetryClicked = {},
+        onMoreItemsRequested = {},
+        onCharacterClicked = {}
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewCharactersScreenOnLoadedOffline() {
+    CharactersScreenContent(
+        modifier = Modifier,
+        state = CharactersScreenState.Loaded(
+            isLoadingMoreData = false,
+            isErrorLoadingMore = false,
+            data = PaginatedCharacterListViewData(
+                hasMoreItems = true,
+                nextPageIndex = 2,
+                items = listOf(
+                    CharacterViewData(
+                        name = "Rick Sanchez",
+                        species = "Human",
+                        gender = "Male",
+                        status = CharacterStatus.DEAD,
+                        type = "",
+                        locationName = "Earth",
+                        episodesAmount = 9,
+                        episodesLabel = "1, 2, 3, 4, 5, 6, 7, 8, 9",
+                        image = "",
+                        id = 0,
+                        creationDate = "",
+                        originName = "Earth"
+                    )
+                )
+            )
+        ),
+        isNetworkAvailable = false,
+        onRetryClicked = {},
+        onMoreItemsRequested = {},
+        onCharacterClicked = {}
+    )
+}

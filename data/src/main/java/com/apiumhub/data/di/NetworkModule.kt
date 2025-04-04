@@ -21,12 +21,6 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideNetworkBaseUrl(): String {
-        return BuildConfig.BASE_URL
-    }
-
-    @Provides
-    @Singleton
     fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
         return HttpLoggingInterceptor().apply {
             level = if (BuildConfig.DEBUG) {
@@ -61,12 +55,11 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideRetrofitClient(
-        baseUrl: String,
         jsonConverter: Converter.Factory,
         okHttpClient: OkHttpClient,
     ): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(baseUrl)
+            .baseUrl(BuildConfig.BASE_URL)
             .addConverterFactory(jsonConverter)
             .client(okHttpClient)
             .build()

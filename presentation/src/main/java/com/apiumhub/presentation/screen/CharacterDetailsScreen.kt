@@ -1,7 +1,6 @@
 package com.apiumhub.presentation.screen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,6 +21,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,17 +34,22 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.apiumhub.presentation.R
+import com.apiumhub.presentation.model.CharacterStatus
 import com.apiumhub.presentation.model.CharacterViewData
 import com.apiumhub.presentation.ui.component.ErrorView
 import com.apiumhub.presentation.ui.component.LoaderView
+import com.apiumhub.presentation.ui.theme.ErrorRed
 import com.apiumhub.presentation.ui.theme.Spacing
+import com.apiumhub.presentation.ui.theme.SuccessGreen
 import com.apiumhub.presentation.viewmodel.CharacterDetailScreenAction
 import com.apiumhub.presentation.viewmodel.CharacterDetailScreenState
 import com.apiumhub.presentation.viewmodel.CharacterDetailScreenState.Loaded
@@ -86,32 +91,71 @@ private fun CharacterDetailScreenContent(
     Box(modifier = modifier.fillMaxSize()) {
         when (state) {
             Loading -> {
-                LoaderView()
+                CharacterDetailsLoadingView(modifier = modifier, onBackClicked = onBackClicked)
             }
 
             CharacterDetailScreenState.Error -> {
-                ErrorView(
-                    onRetryClicked = onRetryClicked,
+                CharacterDetailsErrorView(
+                    modifier = modifier,
+                    onBackClicked = onBackClicked,
+                    onRetryClicked = onRetryClicked
                 )
+
             }
 
             is Loaded -> {
-                CharacterDetailsView(data = state.data)
+                CharacterDetailsView(data = state.data, onBackClicked = onBackClicked)
             }
         }
+    }
+}
 
-        Icon(
-            modifier = Modifier
-                .clickable { onBackClicked() }
-                .padding(Spacing.medium),
-            imageVector = Icons.AutoMirrored.Default.ArrowBack,
-            contentDescription = null,
+@Composable
+private fun CharacterDetailsLoadingView(
+    modifier: Modifier,
+    onBackClicked: () -> Unit
+) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(Spacing.extraSmall)
+    ) {
+        IconButton(onClick = onBackClicked) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                contentDescription = null,
+            )
+        }
+        LoaderView()
+    }
+}
+
+@Composable
+private fun CharacterDetailsErrorView(
+    modifier: Modifier,
+    onBackClicked: () -> Unit,
+    onRetryClicked: () -> Unit
+) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(Spacing.extraSmall)
+    ) {
+        IconButton(onClick = onBackClicked) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                contentDescription = null,
+            )
+        }
+        ErrorView(
+            onRetryClicked = onRetryClicked,
         )
     }
 }
 
 @Composable
 fun CharacterDetailsView(
+    onBackClicked: () -> Unit,
     modifier: Modifier = Modifier,
     data: CharacterViewData,
 ) {
@@ -129,94 +173,105 @@ fun CharacterDetailsView(
                 .alpha(0.2f)
         )
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(Spacing.medium),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Spacer(modifier = Modifier.height(Spacing.extraLarge))
-
-            Card(
-                elevation = CardDefaults.cardElevation(defaultElevation = DEFAULT_ELEVATION.dp),
-                modifier = Modifier.fillMaxWidth(),
+        Column {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(Spacing.extraSmall)
             ) {
-                AsyncImage(
-                    model = data.image,
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
-
-            Spacer(modifier = Modifier.height(Spacing.medium))
-
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                ),
-                elevation = CardDefaults.cardElevation(defaultElevation = DEFAULT_ELEVATION.dp)
-            ) {
-                Column(
-                    modifier = Modifier.padding(Spacing.medium)
-                ) {
-                    Text(
-                        text = data.name,
-                        style = MaterialTheme.typography.headlineMedium,
-                        color = MaterialTheme.colorScheme.onSurface
+                IconButton(onClick = onBackClicked) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                        contentDescription = null,
                     )
-
-                    Spacer(modifier = Modifier.height(Spacing.small))
-
-                    CharacterDetailItem(
-                        title = stringResource(R.string.character_description_species),
-                        value = data.species
-                    )
-
-                    CharacterDetailItem(
-                        title = stringResource(R.string.character_description_gender),
-                        value = data.gender
-                    )
-
-                    CharacterStatusDetailItem(value = data.status)
-
-                    if (data.type.isNotEmpty()) {
-                        CharacterDetailItem(
-                            title = stringResource(R.string.character_description_type),
-                            value = data.type
-                        )
-                    }
-
-                    CharacterDetailItem(
-                        title = stringResource(R.string.character_description_location),
-                        value = data.locationName
-                    )
-
-                    if (data.episodes.length <= 2) {
-                        CharacterDetailItem(
-                            title = stringResource(R.string.episode),
-                            value = data.episodes
-                        )
-
-                    } else if (data.episodes.length <= 10) {
-                        CharacterDetailItem(
-                            title = stringResource(R.string.episodes),
-                            value = data.episodes
-                        )
-                    }
                 }
             }
 
-            if (data.episodes.length > 10) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(Spacing.medium),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Card(
+                    elevation = CardDefaults.cardElevation(defaultElevation = DEFAULT_ELEVATION.dp),
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    AsyncImage(
+                        model = data.image,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+
                 Spacer(modifier = Modifier.height(Spacing.medium))
 
-                CharacterEpisodesView(
-                    value = data.episodes
-                )
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surface
+                    ),
+                    elevation = CardDefaults.cardElevation(defaultElevation = DEFAULT_ELEVATION.dp)
+                ) {
+                    Column(
+                        modifier = Modifier.padding(Spacing.medium)
+                    ) {
+                        Text(
+                            text = data.name,
+                            style = MaterialTheme.typography.headlineMedium,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+
+                        Spacer(modifier = Modifier.height(Spacing.small))
+
+                        CharacterDetailItem(
+                            title = stringResource(R.string.character_description_species),
+                            value = data.species
+                        )
+
+                        CharacterDetailItem(
+                            title = stringResource(R.string.character_description_gender),
+                            value = data.gender
+                        )
+
+                        CharacterStatusDetailItem(status = data.status)
+
+                        if (data.type.isNotEmpty()) {
+                            CharacterDetailItem(
+                                title = stringResource(R.string.character_description_type),
+                                value = data.type
+                            )
+                        }
+
+                        CharacterDetailItem(
+                            title = stringResource(R.string.character_description_location),
+                            value = data.locationName
+                        )
+
+                        if (!data.shouldShowEpisodeTab) {
+                            CharacterDetailItem(
+                                title = pluralStringResource(
+                                    R.plurals.episode,
+                                    data.episodesAmount
+                                ),
+                                value = data.episodesLabel
+                            )
+                        }
+                    }
+                }
+
+                if (data.shouldShowEpisodeTab) {
+                    Spacer(modifier = Modifier.height(Spacing.medium))
+
+                    CharacterEpisodesView(
+                        value = data.episodesLabel
+                    )
+                }
             }
         }
+
     }
 }
 
@@ -250,7 +305,7 @@ fun CharacterDetailItem(title: String, value: String) {
 }
 
 @Composable
-fun CharacterStatusDetailItem(value: String) {
+fun CharacterStatusDetailItem(status: CharacterStatus) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -268,14 +323,14 @@ fun CharacterStatusDetailItem(value: String) {
 
         Text(
             modifier = Modifier.weight(1f),
-            text = value,
+            text = status.status,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
             textAlign = TextAlign.End,
             style = MaterialTheme.typography.bodyLarge,
-            color = when (value) {
-                stringResource(R.string.alive) -> Color.Green
-                stringResource(R.string.dead) -> Color.Red
+            color = when (status) {
+                CharacterStatus.ALIVE -> SuccessGreen
+                CharacterStatus.DEAD -> ErrorRed
                 else -> MaterialTheme.colorScheme.onSurface
             }
         )
@@ -343,3 +398,66 @@ fun CharacterEpisodesView(value: String) {
 }
 
 private const val DEFAULT_ELEVATION = 4
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewCharacterDetailsLoading() {
+    CharacterDetailsLoadingView(
+        modifier = Modifier.fillMaxSize(),
+        onBackClicked = {}
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewCharacterDetailsError() {
+    CharacterDetailsErrorView(
+        modifier = Modifier.fillMaxSize(),
+        onBackClicked = {},
+        onRetryClicked = {}
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewCharacterDetailsLoaded() {
+    CharacterDetailsView(
+        data = CharacterViewData(
+            name = "Rick Sanchez",
+            species = "Human",
+            gender = "Male",
+            status = CharacterStatus.ALIVE,
+            type = "",
+            locationName = "Earth",
+            episodesAmount = 10,
+            episodesLabel = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10",
+            image = "",
+            id = 0,
+            creationDate = "",
+            originName = "Earth"
+        ),
+        onBackClicked = {}
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewCharacterDetailsLoadedLessThan10EpisodesDead() {
+    CharacterDetailsView(
+        data = CharacterViewData(
+            name = "Rick Sanchez",
+            species = "Human",
+            gender = "Male",
+            status = CharacterStatus.DEAD,
+            type = "",
+            locationName = "Earth",
+            episodesAmount = 9,
+            episodesLabel = "1, 2, 3, 4, 5, 6, 7, 8, 9",
+            image = "",
+            id = 0,
+            creationDate = "",
+            originName = "Earth"
+        ),
+        onBackClicked = {}
+    )
+}

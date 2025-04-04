@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.apiumhub.domain.model.PaginatedCharacterListModel
 import com.apiumhub.domain.usecase.GetCharactersPageUseCase
-import com.apiumhub.domain.usecase.GetNetworkAvailabilityUseCase
+import com.apiumhub.domain.usecase.ObserveNetworkAvailabilityUseCase
 import com.apiumhub.presentation.model.CharacterViewData
 import com.apiumhub.presentation.model.PaginatedCharacterListViewData
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,15 +20,15 @@ import javax.inject.Inject
 @HiltViewModel
 class CharactersViewModel @Inject constructor(
     private val getCharactersPageUseCase: GetCharactersPageUseCase,
-    private val getNetworkAvailabilityUseCase: GetNetworkAvailabilityUseCase
+    observeNetworkAvailabilityUseCase: ObserveNetworkAvailabilityUseCase
 ) : ViewModel() {
 
     companion object {
         private const val FIRST_PAGE_INDEX = 0
     }
 
-    private val _networkState = MutableStateFlow(true)
-    val networkState = _networkState.asStateFlow()
+    val isNetworkAvailableState =
+        observeNetworkAvailabilityUseCase.execute()
 
     private val _screenState =
         MutableStateFlow<CharactersScreenState>(CharactersScreenState.Loading)
@@ -40,7 +40,6 @@ class CharactersViewModel @Inject constructor(
     private var nextPageIndex: Int = FIRST_PAGE_INDEX
 
     init {
-        getConnectivity()
         loadNextPage()
     }
 
@@ -55,17 +54,6 @@ class CharactersViewModel @Inject constructor(
     fun onCharacterClicked(characterId: Int) {
         viewModelScope.launch {
             _screenAction.emit(CharacterListScreenAction.NavigateToCharacterDetailAction(characterId))
-        }
-    }
-
-    private fun getConnectivity() {
-        viewModelScope.launch {
-            getNetworkAvailabilityUseCase.execute().collect {
-                if (!_networkState.value && it && _screenState.value.canLoad) {
-                    loadNextPage()
-                }
-                _networkState.emit(it)
-            }
         }
     }
 
@@ -121,7 +109,8 @@ class CharactersViewModel @Inject constructor(
         } else if (currentState is CharactersScreenState.Loaded) {
             _screenState.update {
                 currentState.copy(
-                    isErrorLoadingMore = true
+                    isErrorLoadingMore = true,
+                    isLoadingMoreData = false
                 )
             }
         }
