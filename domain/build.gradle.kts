@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.fillthegapp.domain"
+    namespace = "com.apiumhub.domain"
     compileSdk = 35
 
     defaultConfig {
@@ -18,7 +18,7 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

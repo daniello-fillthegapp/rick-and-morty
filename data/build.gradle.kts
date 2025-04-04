@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.fillthegapp.data"
+    namespace = "com.apiumhub.data"
     compileSdk = 35
 
     defaultConfig {
@@ -21,7 +21,7 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -64,7 +64,6 @@ dependencies {
 
     testImplementation(libs.mockito.core)
     testImplementation(libs.mockito.kotlin)
-    testImplementation(libs.mockito.inline)
     testImplementation(libs.kotlin.test)
 
     androidTestImplementation(libs.mockito.android)

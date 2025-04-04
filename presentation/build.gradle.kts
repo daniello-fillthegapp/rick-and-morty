@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.fillthegapp.presentation"
+    namespace = "com.apiumhub.presentation"
     compileSdk = 35
 
     defaultConfig {
@@ -19,7 +19,7 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -40,6 +40,7 @@ android {
 
 dependencies {
     implementation(project(":domain"))
+    debugImplementation(libs.ui.tooling)
     ksp(libs.hilt.android.compiler)
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.navigation)
@@ -55,8 +56,12 @@ dependencies {
     implementation(libs.compose.coil)
     implementation(libs.compose.navigation)
     implementation(libs.androidx.activity.compose)
-
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.androidx.junit)
+    testImplementation(libs.androidx.espresso.core)
+    testImplementation(libs.mockito.inline)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.kotlin.test)
 }

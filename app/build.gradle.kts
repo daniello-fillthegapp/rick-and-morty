@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.fillthegapp.rickandmorty"
+    namespace = "com.apiumhub.rickandmorty"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.fillthegapp.rickandmorty"
+        applicationId = "com.apiumhub.rickandmorty"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
@@ -22,7 +22,7 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
