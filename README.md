@@ -5,9 +5,10 @@ This Android app is built around **Clean Architecture**, using **Jetpack Compose
 ## Architecture Overview
 - **Clean Architecture**: Divided into layers for presentation, domain, and data.
 - **Jetpack Compose** and **Material 3**: For building the UI.
-- **State Management**: Handled by **StateFlow** and **LiveData**.
+- **State Management**: Handled by **StateFlow**.
 
 ### Presentation Layer
+- MVVM pattern used
 - ViewModels handle UI-related data.
 - Compose is used to create responsive UI components.
 
@@ -49,6 +50,8 @@ This Android app is built around **Clean Architecture**, using **Jetpack Compose
 ```
 ## Testing
 The **data layer** of this project is thoroughly tested using **unit tests** to ensure the correctness and reliability of the data handling components such as repositories, data sources, and network operations.
+
+The **presentation layer** of this project is tested using **unit tests** in the ViewModels to ensure the correctness of the screen states.
 
 ## How to Run
 1. Clone the repository.
