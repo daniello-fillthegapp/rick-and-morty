@@ -14,11 +14,9 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
-      - name: Unit Test CharacterDetailViewModelTest
-        run: ./gradlew CharacterDetailViewModelTest
-
-      - name: Unit Test CharacterRepositoryImplTest
-        run: ./gradlew CharacterRepositoryImplTest
+      - name: Unit Test
+        run: ./gradlew testDebugUnitTest
 
       - name: Android Test Report
         uses: asadmansr/android-test-report-action@v1.2.0
+        if: ${{ always()}}
