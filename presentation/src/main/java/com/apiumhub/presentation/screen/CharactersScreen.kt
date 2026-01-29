@@ -132,7 +132,6 @@ private fun CharactersScreenContent(
     }
 }
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CharacterListView(
@@ -159,7 +158,7 @@ private fun CharacterListView(
                 onClick = onCharacterClicked
             )
 
-            //start loading before user reaches the image.
+            // start loading before user reaches the image.
             if (index > data.items.size - AVERAGE_ITEMS_DISPLAYED) {
                 LaunchedEffect(Unit) {
                     onMoreItemsRequested()
@@ -192,7 +191,8 @@ private fun CharacterListView(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .clip(Shapes.large)
-                            .clickable { onMoreItemsRequested() }) {
+                            .clickable { onMoreItemsRequested() }
+                    ) {
                         Text(
                             modifier = Modifier.padding(Spacing.small),
                             text = stringResource(R.string.click_to_load_more_content),
@@ -208,7 +208,6 @@ private fun CharacterListView(
                             )
                         }
                     }
-
                 }
             }
         }
@@ -371,7 +370,7 @@ fun PreviewCharacterItemView() {
 fun PreviewCharactersScreenOnError() {
     CharactersScreenContent(
         modifier = Modifier,
-        state = CharactersScreenState.Error,
+        state = CharactersScreenState.Error(),
         isNetworkAvailable = true,
         onRetryClicked = {},
         onMoreItemsRequested = {},

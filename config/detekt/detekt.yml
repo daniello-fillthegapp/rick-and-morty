@@ -1,0 +1,51 @@
+build:
+  maxIssues: 0
+
+config:
+  validation: true
+
+style:
+  WildcardImport:
+    active: true
+
+  MagicNumber:
+    active: true
+    ignoreNumbers:
+      - "-1"
+      - "0"
+      - "1"
+      - "2"
+    excludes:
+      - "**/ui/**"
+      - "**/screen/**"
+      - "**/*Screen.kt"
+      - "**/*Preview*.kt"
+
+naming:
+  FunctionNaming:
+    active: true
+    ignoreAnnotated:
+      - Composable
+
+coroutines:
+  InjectDispatcher:
+    active: true
+    excludes:
+      - "**/data/**"
+
+complexity:
+  LongMethod:
+    active: true
+    threshold: 110
+
+  TooManyFunctions:
+    active: true
+    thresholdInFiles: 20
+    thresholdInClasses: 20
+
+  LongParameterList:
+    active: true
+    functionThreshold: 8
+    constructorThreshold: 8
+    ignoreAnnotated:
+      - Composable

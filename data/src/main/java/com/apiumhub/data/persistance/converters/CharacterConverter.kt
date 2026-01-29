@@ -5,7 +5,7 @@ import androidx.room.TypeConverter
 class CharacterConverter {
     @TypeConverter
     fun fromEpisodeList(episodeList: List<String>?): String {
-        return episodeList?.joinToString(",") ?: ""
+        return episodeList?.joinToString(",").orEmpty()
     }
 
     @TypeConverter

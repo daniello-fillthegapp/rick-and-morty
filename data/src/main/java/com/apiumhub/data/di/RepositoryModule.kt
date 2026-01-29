@@ -1,7 +1,7 @@
 package com.apiumhub.data.di
 
-import com.apiumhub.data.datasource.LocalDataSource
 import com.apiumhub.data.datasource.ConnectivityDataSource
+import com.apiumhub.data.datasource.LocalDataSource
 import com.apiumhub.data.datasource.RemoteDataSource
 import com.apiumhub.data.repository.CharacterRepositoryImpl
 import com.apiumhub.data.repository.ConnectivityRepositoryImpl

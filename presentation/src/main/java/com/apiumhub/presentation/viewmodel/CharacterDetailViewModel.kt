@@ -62,14 +62,16 @@ class CharacterDetailViewModel @Inject constructor(
 
     private fun onRequestDetailsFailure(error: Throwable) {
         _screenState.update {
-            CharacterDetailScreenState.Error
+            CharacterDetailScreenState.Error(error)
         }
     }
 }
 
 sealed class CharacterDetailScreenState {
     object Loading : CharacterDetailScreenState()
-    object Error : CharacterDetailScreenState()
+    data class Error(
+        val exception: Throwable
+    ) : CharacterDetailScreenState()
     data class Loaded(
         val data: CharacterViewData,
     ) : CharacterDetailScreenState()

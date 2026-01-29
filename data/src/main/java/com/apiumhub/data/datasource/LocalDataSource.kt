@@ -34,6 +34,7 @@ class LocalDataSource @Inject constructor(
         imageUrl: String,
         imageData: ByteArray
     ): String? {
+        @Suppress("TooGenericExceptionCaught")
         return try {
             val fileName = imageUrl.substringAfterLast("/")
             val directory = File(context.filesDir, "images")

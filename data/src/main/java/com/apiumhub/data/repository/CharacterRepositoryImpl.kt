@@ -61,6 +61,7 @@ class CharacterRepositoryImpl(
     }
 
     private suspend fun downloadImage(url: String): String {
+        @Suppress("TooGenericExceptionCaught")
         try {
             val remoteData = remoteDataSource.downloadMedia(url)
             val body = remoteData.body()?.bytes()
