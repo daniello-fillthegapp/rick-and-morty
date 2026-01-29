@@ -103,7 +103,7 @@ class CharactersViewModel @Inject constructor(
         val currentState = _screenState.value
 
         if (currentState is CharactersScreenState.Loading) {
-            _screenState.update { CharactersScreenState.Error }
+            _screenState.update { CharactersScreenState.Error(error) }
         } else if (currentState is CharactersScreenState.Loaded) {
             _screenState.update {
                 currentState.copy(
@@ -119,7 +119,9 @@ open class CharactersScreenState(
     val canLoad: Boolean
 ) {
     object Loading : CharactersScreenState(false)
-    object Error : CharactersScreenState(true)
+    data class Error(
+        val exception: Throwable? = null
+    ) : CharactersScreenState(true)
     data class Loaded(
         val isErrorLoadingMore: Boolean,
         val isLoadingMoreData: Boolean,

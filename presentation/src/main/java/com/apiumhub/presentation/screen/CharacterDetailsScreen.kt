@@ -94,13 +94,12 @@ private fun CharacterDetailScreenContent(
                 CharacterDetailsLoadingView(modifier = modifier, onBackClicked = onBackClicked)
             }
 
-            CharacterDetailScreenState.Error -> {
+            is CharacterDetailScreenState.Error -> {
                 CharacterDetailsErrorView(
                     modifier = modifier,
                     onBackClicked = onBackClicked,
                     onRetryClicked = onRetryClicked
                 )
-
             }
 
             is Loaded -> {
@@ -271,7 +270,6 @@ fun CharacterDetailsView(
                 }
             }
         }
-
     }
 }
 

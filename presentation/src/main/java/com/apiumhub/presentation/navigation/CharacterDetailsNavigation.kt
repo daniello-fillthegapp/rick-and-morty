@@ -15,9 +15,14 @@ fun NavController.navigateToDetails(id: Int, options: NavOptions? = null) {
 fun NavGraphBuilder.addCharacterDetailsRoute(
     onNavigateBack: () -> Unit
 ) {
-    composable(route = AppRoute.CharacterDetail.route, arguments = listOf(navArgument("id") {
-        type = NavType.IntType
-    })) {
+    composable(
+        route = AppRoute.CharacterDetail.route,
+        arguments = listOf(
+            navArgument("id") {
+                type = NavType.IntType
+            }
+        )
+    ) {
         CharacterDetailsScreen(
             onNavigateBack = onNavigateBack
         )

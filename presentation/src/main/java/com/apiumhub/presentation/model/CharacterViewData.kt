@@ -2,6 +2,8 @@ package com.apiumhub.presentation.model
 
 import com.apiumhub.domain.model.CharacterModel
 
+private const val DEFAULT_TAB_SIZE = 10
+
 data class CharacterViewData(
     val id: Int,
     val name: String,
@@ -16,7 +18,7 @@ data class CharacterViewData(
     val episodesAmount: Int,
     val status: CharacterStatus,
 ) {
-    val shouldShowEpisodeTab = episodesAmount >= 10
+    val shouldShowEpisodeTab = episodesAmount >= DEFAULT_TAB_SIZE
 
     companion object {
         fun from(model: CharacterModel): CharacterViewData {
