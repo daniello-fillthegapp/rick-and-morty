@@ -1,0 +1,30 @@
+name: Android Lint
+
+on: [push]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
+
+      - name: Run Android Lint (Debug)
+        run: ./gradlew lintDebug
+
+      - name: Upload Lint reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-lint-report
+          if-no-files-found: warn
+          path: |
+            **/build/reports/lint-results*.html
+            **/build/reports/lint-results*.xml
